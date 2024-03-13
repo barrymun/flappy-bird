@@ -1,7 +1,9 @@
 import "./App.css";
 
+import { Canvas } from "components";
+
 function App() {
-  return <>Hello</>;
+  return <Canvas />;
 }
 
 export default App;

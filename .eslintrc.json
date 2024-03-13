@@ -8,7 +8,7 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "ignorePatterns": ["node_modules", "dist", "*.config.js"],
+  "ignorePatterns": ["node_modules", "dist"],
   "plugins": ["@typescript-eslint", "prettier", "import", "react-refresh"],
   "extends": [
     "eslint:recommended", 

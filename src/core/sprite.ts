@@ -1,6 +1,6 @@
 import { Coords, SpriteAnimation, SpriteImageAttribute, SpriteImageElement } from "utils";
 
-interface SpriteProps {
+export interface SpriteProps {
   position: Coords;
   sprites: SpriteImageAttribute;
   scale?: number;
@@ -20,6 +20,14 @@ export class Sprite {
   _shouldFlip: boolean = false;
   _currentFrame: number = 0;
   _elapsedFrames: number = 0;
+
+  get position() {
+    return this._position;
+  }
+
+  set position(position: Coords) {
+    this._position = position;
+  }
 
   constructor({ position, sprites, scale, heldFrames, offset, shouldFlip }: SpriteProps) {
     this._position = position;
@@ -56,7 +64,7 @@ export class Sprite {
     this._shouldFlip = shouldFlip ?? this._shouldFlip;
   }
 
-  private draw = (canvas: HTMLCanvasElement) => {
+  protected draw = (canvas: HTMLCanvasElement) => {
     canvas
       .getContext("2d")!
       .drawImage(
@@ -72,7 +80,7 @@ export class Sprite {
       );
   };
 
-  private animate = () => {
+  protected animate = () => {
     this._elapsedFrames++;
     if (this._elapsedFrames % this._heldFrames === 0) {
       if (this._currentFrame < this._totalFrames - 1) {

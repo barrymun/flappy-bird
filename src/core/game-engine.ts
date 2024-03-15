@@ -1,5 +1,13 @@
 import { Pipe, Sprite } from "core";
-import { defaultCanvasHeight, defaultCanvasWidth, pipeScale, pipeWidth } from "utils";
+import { defaultCanvasHeight, defaultCanvasWidth, generateRandomPipeOffset, pipeScale } from "utils";
+
+// TODO: clean this up
+const image = new Image();
+image.src = "src/assets/img/pipe.png";
+const pipeWidth = image.naturalWidth;
+const pipeHeight = image.naturalHeight;
+const pipeGap = pipeHeight / 4;
+console.log(pipeWidth, pipeHeight, pipeGap);
 
 export class GameEngine {
   static _instance: GameEngine | undefined;
@@ -31,10 +39,12 @@ export class GameEngine {
     });
     const firstPipeX = this._canvas.width;
     const secondPipeX = this._canvas.width + this._canvas.width / 2 + (pipeWidth * pipeScale) / 2;
+    const firstPipeOffset = generateRandomPipeOffset(0 + pipeHeight / 4, pipeHeight - pipeHeight / 4);
+    const secondPipeOffset = generateRandomPipeOffset(0 + pipeHeight / 4, pipeHeight - pipeHeight / 4);
     this._pipes = [
       // first pipe bottom
       new Pipe({
-        position: { x: firstPipeX, y: 220 },
+        position: { x: firstPipeX, y: firstPipeOffset },
         sprites: {
           idle: {
             imageSrc: "src/assets/img/pipe.png",
@@ -44,17 +54,18 @@ export class GameEngine {
       }),
       // first pipe top
       new Pipe({
-        position: { x: firstPipeX, y: 100 },
+        position: { x: firstPipeX, y: firstPipeOffset - pipeHeight * pipeScale - pipeGap },
         sprites: {
           idle: {
             imageSrc: "src/assets/img/pipe.png",
           },
         },
         scale: pipeScale,
+        shouldInvert: true,
       }),
       // second pipe bottom
       new Pipe({
-        position: { x: secondPipeX, y: 220 },
+        position: { x: secondPipeX, y: secondPipeOffset },
         sprites: {
           idle: {
             imageSrc: "src/assets/img/pipe.png",
@@ -64,13 +75,14 @@ export class GameEngine {
       }),
       // second pipe top
       new Pipe({
-        position: { x: secondPipeX, y: 320 },
+        position: { x: secondPipeX, y: secondPipeOffset - pipeHeight * pipeScale - pipeGap },
         sprites: {
           idle: {
             imageSrc: "src/assets/img/pipe.png",
           },
         },
         scale: pipeScale,
+        shouldInvert: true,
       }),
     ];
   };

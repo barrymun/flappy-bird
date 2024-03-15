@@ -7,6 +7,7 @@ export interface SpriteProps {
   heldFrames?: number;
   offset?: Coords;
   shouldFlip?: boolean;
+  shouldInvert?: boolean;
 }
 
 export class Sprite {
@@ -18,6 +19,7 @@ export class Sprite {
   _heldFrames: number = 5;
   _offset: Coords = { x: 0, y: 0 };
   _shouldFlip: boolean = false;
+  _shouldInvert: boolean = false;
   _currentFrame: number = 0;
   _elapsedFrames: number = 0;
 
@@ -29,7 +31,7 @@ export class Sprite {
     this._position = position;
   }
 
-  constructor({ position, sprites, scale, heldFrames, offset, shouldFlip }: SpriteProps) {
+  constructor({ position, sprites, scale, heldFrames, offset, shouldFlip, shouldInvert }: SpriteProps) {
     this._position = position;
     this._sprites = Object.keys(sprites).reduce((previous, key) => {
       const k = key as SpriteAnimation;
@@ -62,13 +64,36 @@ export class Sprite {
     this._heldFrames = heldFrames ?? this._heldFrames;
     this._offset = offset ?? this._offset;
     this._shouldFlip = shouldFlip ?? this._shouldFlip;
+    this._shouldInvert = shouldInvert ?? this._shouldInvert;
   }
+
+  private getImage = () => {
+    if (!this._shouldInvert) {
+      return this._image;
+    }
+    // temp canvas is drawn to flip the image vertically
+    const tempCanvas = document.createElement("canvas");
+    const tempCtx = tempCanvas.getContext("2d")!;
+    tempCanvas.width = this._image.width;
+    tempCanvas.height = this._image.height;
+    tempCtx.save();
+    tempCtx.scale(1, -1); // flip the image vertically
+    tempCtx.drawImage(
+      this._image,
+      0,
+      0,
+      this._image.width,
+      this._image.height * -1, // adjust the height to flip
+    );
+    tempCtx.restore();
+    return tempCanvas;
+  };
 
   protected draw = (canvas: HTMLCanvasElement) => {
     canvas
       .getContext("2d")!
       .drawImage(
-        this._image,
+        this.getImage(),
         (this._currentFrame * this._image.width) / this._totalFrames,
         0,
         this._image.width / this._totalFrames,

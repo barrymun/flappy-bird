@@ -1,34 +1,44 @@
 import { Pipe, Sprite } from "core";
 import { defaultCanvasHeight, defaultCanvasWidth, generateRandomPipeOffset, pipeScale } from "utils";
 
-// TODO: clean this up
-const image = new Image();
-image.src = "src/assets/img/pipe.png";
-const pipeWidth = image.naturalWidth;
-const pipeHeight = image.naturalHeight;
-const pipeGap = pipeHeight / 4;
-console.log(pipeWidth, pipeHeight, pipeGap);
-
 export class GameEngine {
-  static _instance: GameEngine | undefined;
-  _canvas!: HTMLCanvasElement;
+  private static _instance: GameEngine | undefined;
+  private static _canvas: HTMLCanvasElement;
+  _pipeImg: HTMLImageElement | undefined;
   _animationRequestId: number | undefined;
   _background!: Sprite;
   _pipes!: Pipe[];
+
+  static get canvas() {
+    return GameEngine._canvas;
+  }
+
+  get pipeImg() {
+    return this._pipeImg!;
+  }
 
   constructor(canvas: HTMLCanvasElement) {
     if (GameEngine._instance) {
       return;
     }
     GameEngine._instance = this;
-    this._canvas = canvas;
-    this.draw();
-    this.run();
+    GameEngine._canvas = canvas;
+    this.setup();
   }
 
+  private setup = async () => {
+    const image = new Image();
+    image.src = "src/assets/img/pipe.png";
+    image.onload = () => {
+      this._pipeImg = image;
+      this.draw();
+      this.run();
+    };
+  };
+
   private draw = () => {
-    this._canvas.width = defaultCanvasWidth;
-    this._canvas.height = defaultCanvasHeight;
+    GameEngine._canvas.width = defaultCanvasWidth;
+    GameEngine._canvas.height = defaultCanvasHeight;
     this._background = new Sprite({
       position: { x: 0, y: 0 },
       sprites: {
@@ -37,8 +47,12 @@ export class GameEngine {
         },
       },
     });
-    const firstPipeX = this._canvas.width;
-    const secondPipeX = this._canvas.width + this._canvas.width / 2 + (pipeWidth * pipeScale) / 2;
+
+    const pipeWidth = this.pipeImg.naturalWidth;
+    const pipeHeight = this.pipeImg.naturalHeight;
+    const pipeGap = pipeHeight / 4;
+    const firstPipeX = GameEngine._canvas.width;
+    const secondPipeX = GameEngine._canvas.width + GameEngine._canvas.width / 2 + (pipeWidth * pipeScale) / 2;
     const firstPipeOffset = generateRandomPipeOffset(0 + pipeHeight / 4, pipeHeight - pipeHeight / 4);
     const secondPipeOffset = generateRandomPipeOffset(0 + pipeHeight / 4, pipeHeight - pipeHeight / 4);
     this._pipes = [
@@ -89,7 +103,7 @@ export class GameEngine {
 
   private run = () => {
     this._animationRequestId = requestAnimationFrame(this.run);
-    this._background.update(this._canvas);
-    this._pipes.forEach((pipe) => pipe.update(this._canvas));
+    this._background.update();
+    this._pipes.forEach((pipe) => pipe.update());
   };
 }

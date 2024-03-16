@@ -1,3 +1,4 @@
+import { GameEngine } from "core/game-engine";
 import { Sprite, SpriteProps } from "core/sprite";
 import { pipeMovementSpeed } from "utils";
 
@@ -6,11 +7,11 @@ export class Pipe extends Sprite {
     super(props);
   }
 
-  public update = (canvas: HTMLCanvasElement) => {
-    this.draw(canvas);
+  public update = () => {
+    this.draw();
     this.animate();
     if (this.position.x < -this._image.width * this._scale) {
-      this.position.x = canvas.width;
+      this.position.x = GameEngine.canvas.width;
     } else {
       this.position.x -= pipeMovementSpeed;
     }

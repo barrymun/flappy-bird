@@ -1,3 +1,4 @@
+import { GameEngine } from "core/game-engine";
 import { Coords, SpriteAnimation, SpriteImageAttribute, SpriteImageElement } from "utils";
 
 export interface SpriteProps {
@@ -89,8 +90,8 @@ export class Sprite {
     return tempCanvas;
   };
 
-  protected draw = (canvas: HTMLCanvasElement) => {
-    canvas
+  protected draw = () => {
+    GameEngine.canvas
       .getContext("2d")!
       .drawImage(
         this.getImage(),
@@ -116,8 +117,8 @@ export class Sprite {
     }
   };
 
-  public update = (canvas: HTMLCanvasElement) => {
-    this.draw(canvas);
+  public update = () => {
+    this.draw();
     this.animate();
   };
 }

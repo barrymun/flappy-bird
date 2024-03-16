@@ -3,3 +3,4 @@ export const defaultCanvasHeight = 640;
 export const pipeScale = 0.5;
 // export const pipeWidth = 138;
 // export const pipeGap = 60;
+export const pipeMovementSpeed = 1.2;

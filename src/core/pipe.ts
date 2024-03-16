@@ -1,4 +1,5 @@
 import { Sprite, SpriteProps } from "core/sprite";
+import { pipeMovementSpeed } from "utils";
 
 export class Pipe extends Sprite {
   constructor(props: SpriteProps) {
@@ -11,7 +12,7 @@ export class Pipe extends Sprite {
     if (this.position.x < -this._image.width * this._scale) {
       this.position.x = canvas.width;
     } else {
-      this.position.x -= 2;
+      this.position.x -= pipeMovementSpeed;
     }
   };
 }

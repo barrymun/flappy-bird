@@ -53,8 +53,10 @@ export class GameEngine {
     const pipeGap = pipeHeight / 4;
     const firstPipeX = GameEngine._canvas.width;
     const secondPipeX = GameEngine._canvas.width + GameEngine._canvas.width / 2 + (pipeWidth * pipeScale) / 2;
-    const firstPipeOffset = generateRandomPipeOffset(0 + pipeHeight / 4, pipeHeight - pipeHeight / 4);
-    const secondPipeOffset = generateRandomPipeOffset(0 + pipeHeight / 4, pipeHeight - pipeHeight / 4);
+    const min = 0 + pipeHeight / 4;
+    const max = pipeHeight - pipeHeight / 4;
+    const firstPipeOffset = generateRandomPipeOffset(min, max);
+    const secondPipeOffset = generateRandomPipeOffset(min, max);
     this._pipes = [
       // first pipe bottom
       new Pipe({

@@ -24,3 +24,7 @@ export interface PipeData {
   min: number;
   max: number;
 }
+export interface PipeUpdateProps {
+  isBottomPipe: boolean;
+  newPosition: number;
+}

@@ -1,12 +1,5 @@
 import { Pipe, Sprite } from "core";
-import {
-  PipeData,
-  defaultCanvasHeight,
-  defaultCanvasWidth,
-  generateRandomPipeOffset,
-  pipeMovementSpeed,
-  pipeScale,
-} from "utils";
+import { PipeData, defaultCanvasHeight, defaultCanvasWidth, generateRandomPipeOffset, pipeScale } from "utils";
 
 export class GameEngine {
   private static _instance: GameEngine | undefined;
@@ -16,9 +9,9 @@ export class GameEngine {
   _background!: Sprite;
   _pipeGroups!: [Pipe[], Pipe[]];
 
-  // static get instance() {
-  //   return GameEngine._instance!;
-  // }
+  static get instance() {
+    return GameEngine._instance!;
+  }
 
   static get canvas() {
     return GameEngine._canvas;
@@ -28,24 +21,22 @@ export class GameEngine {
     return this._pipeImg!;
   }
 
-  // public get pipes() {
-  //   return this._pipes;
-  // }
-
-  // public set pipes(pipes: Pipe[]) {
-  //   this._pipes = pipes;
-  // }
-
   constructor(canvas: HTMLCanvasElement) {
     if (GameEngine._instance) {
       return;
     }
+
+    this.setup = this.setup.bind(this);
+    this.run = this.run.bind(this);
+    this.draw = this.draw.bind(this);
+    this.getPipeData = this.getPipeData.bind(this);
+
     GameEngine._instance = this;
     GameEngine._canvas = canvas;
     this.setup();
   }
 
-  private setup = async () => {
+  private async setup() {
     const image = new Image();
     image.src = "src/assets/img/pipe.png";
     image.onload = () => {
@@ -53,18 +44,18 @@ export class GameEngine {
       this.draw();
       this.run();
     };
-  };
+  }
 
-  private getPipeData = (): PipeData => {
+  public getPipeData(): PipeData {
     const pipeWidth = this.pipeImg.naturalWidth;
     const pipeHeight = this.pipeImg.naturalHeight;
     const pipeGap = pipeHeight / 4;
     const min = pipeHeight / 3;
     const max = pipeHeight - pipeHeight / 3;
     return { pipeHeight, pipeGap, pipeWidth, min, max };
-  };
+  }
 
-  private draw = () => {
+  private draw() {
     GameEngine._canvas.width = defaultCanvasWidth;
     GameEngine._canvas.height = defaultCanvasHeight;
     this._background = new Sprite({
@@ -129,28 +120,17 @@ export class GameEngine {
         }),
       ],
     ];
-  };
+  }
 
-  private run = () => {
+  private run() {
     this._animationRequestId = requestAnimationFrame(this.run);
     this._background.update();
     this._pipeGroups.forEach((pipeGroup) => {
-      const { min, max, pipeGap, pipeHeight } = this.getPipeData();
+      const { min, max } = this.getPipeData();
       const newPosition = generateRandomPipeOffset(min, max);
       pipeGroup.forEach((pipe, index) => {
-        if (pipe.position.x < -pipe._image.width * pipe._scale) {
-          if (index === 0) {
-            pipe.position.y = newPosition;
-          } else {
-            pipe.position.y = newPosition - pipeGap - pipeHeight * pipeScale;
-          }
-          // reset the pipe to the right side of the canvas
-          pipe.position.x = GameEngine.canvas.width;
-        } else {
-          pipe.position.x -= pipeMovementSpeed;
-        }
-        pipe.update();
+        pipe.update({ isBottomPipe: index === 0, newPosition });
       });
     });
-  };
+  }
 }

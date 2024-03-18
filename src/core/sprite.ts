@@ -1,5 +1,5 @@
 import { GameEngine } from "core/game-engine";
-import { Coords, SpriteAnimation, SpriteImageAttribute, SpriteImageElement } from "utils";
+import { Coords, PipeUpdateProps, SpriteAnimation, SpriteImageAttribute, SpriteImageElement } from "utils";
 
 export interface SpriteProps {
   position: Coords;
@@ -33,6 +33,11 @@ export class Sprite {
   }
 
   constructor({ position, sprites, scale, heldFrames, offset, shouldFlip, shouldInvert }: SpriteProps) {
+    this.getImage = this.getImage.bind(this);
+    this.draw = this.draw.bind(this);
+    this.animate = this.animate.bind(this);
+    this.update = this.update.bind(this);
+
     this._position = position;
     this._sprites = Object.keys(sprites).reduce((previous, key) => {
       const k = key as SpriteAnimation;
@@ -68,7 +73,7 @@ export class Sprite {
     this._shouldInvert = shouldInvert ?? this._shouldInvert;
   }
 
-  private getImage = () => {
+  private getImage() {
     if (!this._shouldInvert) {
       return this._image;
     }
@@ -88,9 +93,9 @@ export class Sprite {
     );
     tempCtx.restore();
     return tempCanvas;
-  };
+  }
 
-  protected draw = () => {
+  protected draw() {
     GameEngine.canvas
       .getContext("2d")!
       .drawImage(
@@ -104,9 +109,9 @@ export class Sprite {
         (this._image.width / this._totalFrames) * this._scale,
         this._image.height * this._scale,
       );
-  };
+  }
 
-  protected animate = () => {
+  protected animate() {
     this._elapsedFrames++;
     if (this._elapsedFrames % this._heldFrames === 0) {
       if (this._currentFrame < this._totalFrames - 1) {
@@ -115,10 +120,12 @@ export class Sprite {
         this._currentFrame = 0;
       }
     }
-  };
+  }
 
-  public update = () => {
+  public update(): void;
+  public update(pipeUpdateProps?: PipeUpdateProps): void;
+  public update() {
     this.draw();
     this.animate();
-  };
+  }
 }

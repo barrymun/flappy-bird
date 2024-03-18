@@ -17,3 +17,10 @@ export type SpriteImageElement = {
     totalFrames: number;
   };
 };
+export interface PipeData {
+  pipeHeight: number;
+  pipeGap: number;
+  pipeWidth: number;
+  min: number;
+  max: number;
+}

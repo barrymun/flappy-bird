@@ -1,5 +1,12 @@
-import { Pipe, Sprite } from "core";
-import { PipeData, defaultCanvasHeight, defaultCanvasWidth, generateRandomPipeOffset, pipeScale } from "utils";
+import { Pipe, Player, Sprite } from "core";
+import {
+  PipeData,
+  defaultCanvasHeight,
+  defaultCanvasWidth,
+  generateRandomPipeOffset,
+  pipeScale,
+  playerScale,
+} from "utils";
 
 export class GameEngine {
   private static _instance: GameEngine | undefined;
@@ -8,6 +15,7 @@ export class GameEngine {
   _animationRequestId: number | undefined;
   _background!: Sprite;
   _pipeGroups!: [Pipe[], Pipe[]];
+  _player!: Player;
 
   static get instance() {
     return GameEngine._instance!;
@@ -120,6 +128,17 @@ export class GameEngine {
         }),
       ],
     ];
+
+    this._player = new Player({
+      position: { x: GameEngine._canvas.width / 2, y: GameEngine._canvas.height / 2 },
+      sprites: {
+        idle: {
+          imageSrc: "src/assets/img/bird.png",
+          totalFrames: 3,
+        },
+      },
+      scale: playerScale,
+    });
   }
 
   private run() {
@@ -132,5 +151,6 @@ export class GameEngine {
         pipe.update({ isBottomPipe: index === 0, newPosition });
       });
     });
+    this._player.update();
   }
 }

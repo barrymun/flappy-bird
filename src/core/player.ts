@@ -3,27 +3,31 @@ import { Sprite, SpriteProps } from "core/sprite";
 export class Player extends Sprite {
   constructor(props: SpriteProps) {
     super(props);
+
+    this.handleClick = this.handleClick.bind(this);
+    this.handleUnload = this.handleUnload.bind(this);
+    this.bindListeners = this.bindListeners.bind(this);
+    this.destroy = this.destroy.bind(this);
+    this.bindListeners();
   }
 
-  // private handleKeyDown = (_event: Event) => {
-  // };
+  private handleClick(_event: Event) {
+    console.log("click");
+  }
 
-  // private handleKeyUp = (_event: Event) => {
-  // };
+  private handleUnload(_event: Event) {
+    this.destroy();
+  }
 
-  // private handleUnload = (_event: Event) => {
-  //   this.destroy();
-  // };
+  private bindListeners() {
+    console.log("bindListeners");
+    window.addEventListener("click", this.handleClick);
+    window.addEventListener("unload", this.handleUnload);
+  }
 
-  // private bindListeners = () => {
-  //   window.addEventListener("keydown", this.handleKeyDown);
-  //   window.addEventListener("keyup", this.handleKeyUp);
-  //   window.addEventListener("unload", this.handleUnload);
-  // };
-
-  // private destroy = () => {
-  //   window.removeEventListener("keydown", this.handleKeyDown);
-  //   window.removeEventListener("keyup", this.handleKeyUp);
-  //   window.removeEventListener("unload", this.handleUnload);
-  // };
+  private destroy() {
+    console.log("destroy");
+    window.removeEventListener("click", this.handleClick);
+    window.removeEventListener("unload", this.handleUnload);
+  }
 }

@@ -38,6 +38,7 @@ export class GameEngine {
     this.run = this.run.bind(this);
     this.draw = this.draw.bind(this);
     this.getPipeData = this.getPipeData.bind(this);
+    this.detectCollision = this.detectCollision.bind(this);
 
     GameEngine._instance = this;
     GameEngine._canvas = canvas;
@@ -141,6 +142,35 @@ export class GameEngine {
     });
   }
 
+  private detectCollision(pipe: Pipe) {
+    const player = this._player;
+    const playerRect = {
+      x: player.position.x,
+      y: player.position.y,
+      width: (player._image.width * playerScale) / player._sprites.idle.totalFrames,
+      height: player._image.height * playerScale,
+    };
+    const pipeRect = {
+      x: pipe.position.x,
+      y: pipe.position.y,
+      width: pipe._image.width * pipeScale,
+      height: pipe._image.height * pipeScale,
+    };
+
+    // debugging
+    // GameEngine._canvas.getContext("2d")!.strokeRect(playerRect.x, playerRect.y, playerRect.width, playerRect.height);
+    // GameEngine._canvas.getContext("2d")!.strokeRect(pipeRect.x, pipeRect.y, pipeRect.width, pipeRect.height);
+
+    if (
+      playerRect.x < pipeRect.x + pipeRect.width &&
+      playerRect.x + playerRect.width > pipeRect.x &&
+      playerRect.y < pipeRect.y + pipeRect.height &&
+      playerRect.y + playerRect.height > pipeRect.y
+    ) {
+      console.log("collision detected");
+    }
+  }
+
   private run() {
     this._animationRequestId = requestAnimationFrame(this.run);
     this._background.update();
@@ -148,6 +178,7 @@ export class GameEngine {
       const { min, max } = this.getPipeData();
       const newPosition = generateRandomPipeOffset(min, max);
       pipeGroup.forEach((pipe, index) => {
+        this.detectCollision(pipe);
         pipe.update({ isBottomPipe: index === 0, newPosition });
       });
     });

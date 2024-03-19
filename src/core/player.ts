@@ -1,3 +1,4 @@
+import { GameEngine } from "core/game-engine";
 import { Sprite, SpriteProps } from "core/sprite";
 
 export class Player extends Sprite {
@@ -21,13 +22,13 @@ export class Player extends Sprite {
 
   private bindListeners() {
     console.log("bindListeners");
-    window.addEventListener("click", this.handleClick);
+    GameEngine.canvas.addEventListener("click", this.handleClick);
     window.addEventListener("unload", this.handleUnload);
   }
 
   private destroy() {
     console.log("destroy");
-    window.removeEventListener("click", this.handleClick);
+    GameEngine.canvas.removeEventListener("click", this.handleClick);
     window.removeEventListener("unload", this.handleUnload);
   }
 }

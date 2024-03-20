@@ -39,6 +39,7 @@ export class GameEngine {
     this.draw = this.draw.bind(this);
     this.getPipeData = this.getPipeData.bind(this);
     this.detectCollision = this.detectCollision.bind(this);
+    this.detectOutOfBounds = this.detectOutOfBounds.bind(this);
 
     GameEngine._instance = this;
     GameEngine._canvas = canvas;
@@ -168,11 +169,19 @@ export class GameEngine {
       playerRect.y + playerRect.height > pipeRect.y
     ) {
       console.log("collision detected");
+      cancelAnimationFrame(this._animationRequestId!);
+    }
+  }
+
+  private detectOutOfBounds() {
+    if (this._player.position.y < 0 || this._player.position.y > GameEngine.canvas.height) {
+      cancelAnimationFrame(this._animationRequestId!);
     }
   }
 
   private run() {
     this._animationRequestId = requestAnimationFrame(this.run);
+    this.detectOutOfBounds();
     this._background.update();
     this._pipeGroups.forEach((pipeGroup) => {
       const { min, max } = this.getPipeData();

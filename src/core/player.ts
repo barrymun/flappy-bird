@@ -1,7 +1,10 @@
 import { GameEngine } from "core/game-engine";
 import { Sprite, SpriteProps } from "core/sprite";
+import { maxVelocity } from "utils";
 
 export class Player extends Sprite {
+  _velocity: number = 0;
+
   constructor(props: SpriteProps) {
     super(props);
 
@@ -12,8 +15,8 @@ export class Player extends Sprite {
     this.bindListeners();
   }
 
-  private handleClick(_event: Event) {
-    console.log("click");
+  private handleClick(_event: Event | TouchEvent) {
+    this._velocity = -maxVelocity;
   }
 
   private handleUnload(_event: Event) {
@@ -21,14 +24,22 @@ export class Player extends Sprite {
   }
 
   private bindListeners() {
-    console.log("bindListeners");
     GameEngine.canvas.addEventListener("click", this.handleClick);
+    GameEngine.canvas.addEventListener("touchstart", this.handleClick);
     window.addEventListener("unload", this.handleUnload);
   }
 
   private destroy() {
-    console.log("destroy");
     GameEngine.canvas.removeEventListener("click", this.handleClick);
+    GameEngine.canvas.removeEventListener("touchstart", this.handleClick);
     window.removeEventListener("unload", this.handleUnload);
+  }
+
+  public update() {
+    if (this._velocity < maxVelocity) {
+      this._velocity += 0.4;
+    }
+    this.position.y += this._velocity;
+    super.update();
   }
 }

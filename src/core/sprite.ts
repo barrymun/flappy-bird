@@ -125,6 +125,10 @@ export class Sprite {
   public update(): void;
   public update(pipeUpdateProps?: PipeUpdateProps): void;
   public update() {
+    if (GameEngine.instance.gameOver) {
+      // stop updating the sprite if the game is over
+      return;
+    }
     this.draw();
     this.animate();
   }

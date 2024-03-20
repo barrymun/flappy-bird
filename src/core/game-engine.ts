@@ -16,6 +16,7 @@ export class GameEngine {
   _background!: Sprite;
   _pipeGroups!: [Pipe[], Pipe[]];
   _player!: Player;
+  _gameOver: boolean = false;
 
   static get instance() {
     return GameEngine._instance!;
@@ -29,6 +30,14 @@ export class GameEngine {
     return this._pipeImg!;
   }
 
+  public get gameOver() {
+    return this._gameOver;
+  }
+
+  set gameOver(value: boolean) {
+    this._gameOver = value;
+  }
+
   constructor(canvas: HTMLCanvasElement) {
     if (GameEngine._instance) {
       return;
@@ -38,6 +47,7 @@ export class GameEngine {
     this.run = this.run.bind(this);
     this.draw = this.draw.bind(this);
     this.getPipeData = this.getPipeData.bind(this);
+    this.showGameOverModal = this.showGameOverModal.bind(this);
     this.detectCollision = this.detectCollision.bind(this);
     this.detectOutOfBounds = this.detectOutOfBounds.bind(this);
 
@@ -143,6 +153,10 @@ export class GameEngine {
     });
   }
 
+  private showGameOverModal() {
+    document.getElementById("game-over-modal")!.style.display = "block";
+  }
+
   private detectCollision(pipe: Pipe) {
     const player = this._player;
     const playerRect = {
@@ -170,12 +184,19 @@ export class GameEngine {
     ) {
       console.log("collision detected");
       cancelAnimationFrame(this._animationRequestId!);
+      this.gameOver = true;
+      this.showGameOverModal();
     }
   }
 
   private detectOutOfBounds() {
-    if (this._player.position.y < 0 || this._player.position.y > GameEngine.canvas.height) {
+    if (
+      this._player.position.y < 0 ||
+      this._player.position.y > GameEngine.canvas.height - this._player._image.height * playerScale
+    ) {
       cancelAnimationFrame(this._animationRequestId!);
+      this.gameOver = true;
+      this.showGameOverModal();
     }
   }
 

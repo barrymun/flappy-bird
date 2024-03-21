@@ -45,6 +45,19 @@ canvas {
   cursor: pointer;
 }
 
+#score {
+  font-size: 2em;
+  margin: 1em 0;
+  user-select: none;
+  position: fixed;
+  top: 15vh;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #game-over-modal {
   display: none;
   position: fixed;

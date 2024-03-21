@@ -15,17 +15,7 @@ const Canvas: FC<CanvasProps> = () => {
     new GameEngine(canvas);
   }, [canvasRef]);
 
-  return (
-    <>
-      <canvas ref={canvasRef}></canvas>
-      <div id="game-over-modal">
-        <div className="game-over-modal-content">
-          <div>Game Over</div>
-          <button onClick={() => window.location.reload()}>Restart</button>
-        </div>
-      </div>
-    </>
-  );
+  return <canvas ref={canvasRef}></canvas>;
 };
 
 export { Canvas };

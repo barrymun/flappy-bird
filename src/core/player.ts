@@ -4,6 +4,15 @@ import { maxVelocity } from "utils";
 
 export class Player extends Sprite {
   _velocity: number = 0;
+  _score: number = 0;
+
+  public get score() {
+    return this._score;
+  }
+
+  public set score(value: number) {
+    this._score = value;
+  }
 
   constructor(props: SpriteProps) {
     super(props);
@@ -37,7 +46,7 @@ export class Player extends Sprite {
 
   public update() {
     if (this._velocity < maxVelocity) {
-      this._velocity += 0.4;
+      this._velocity += 0.2;
     }
     this.position.y += this._velocity;
     super.update();

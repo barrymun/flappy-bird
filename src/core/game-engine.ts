@@ -50,6 +50,7 @@ export class GameEngine {
     this.showGameOverModal = this.showGameOverModal.bind(this);
     this.detectCollision = this.detectCollision.bind(this);
     this.detectOutOfBounds = this.detectOutOfBounds.bind(this);
+    this.detectPipeCleared = this.detectPipeCleared.bind(this);
 
     GameEngine._instance = this;
     GameEngine._canvas = canvas;
@@ -157,6 +158,17 @@ export class GameEngine {
     document.getElementById("game-over-modal")!.style.display = "block";
   }
 
+  private detectOutOfBounds() {
+    if (
+      this._player.position.y < 0 ||
+      this._player.position.y > GameEngine.canvas.height - this._player._image.height * playerScale
+    ) {
+      cancelAnimationFrame(this._animationRequestId!);
+      this.gameOver = true;
+      this.showGameOverModal();
+    }
+  }
+
   private detectCollision(pipe: Pipe) {
     const player = this._player;
     const playerRect = {
@@ -182,21 +194,20 @@ export class GameEngine {
       playerRect.y < pipeRect.y + pipeRect.height &&
       playerRect.y + playerRect.height > pipeRect.y
     ) {
-      console.log("collision detected");
       cancelAnimationFrame(this._animationRequestId!);
       this.gameOver = true;
       this.showGameOverModal();
     }
   }
 
-  private detectOutOfBounds() {
-    if (
-      this._player.position.y < 0 ||
-      this._player.position.y > GameEngine.canvas.height - this._player._image.height * playerScale
-    ) {
-      cancelAnimationFrame(this._animationRequestId!);
-      this.gameOver = true;
-      this.showGameOverModal();
+  private detectPipeCleared({ isBottomPipe, pipe }: { isBottomPipe: boolean; pipe: Pipe }) {
+    if (!isBottomPipe || pipe.isCleared) {
+      return;
+    }
+    if (pipe.position.x + pipe._image.width * pipeScale < this._player.position.x) {
+      pipe.isCleared = true;
+      this._player.score++;
+      document.getElementById("score")!.innerText = this._player.score.toString();
     }
   }
 
@@ -208,8 +219,10 @@ export class GameEngine {
       const { min, max } = this.getPipeData();
       const newPosition = generateRandomPipeOffset(min, max);
       pipeGroup.forEach((pipe, index) => {
+        const isBottomPipe = index === 0;
         this.detectCollision(pipe);
-        pipe.update({ isBottomPipe: index === 0, newPosition });
+        this.detectPipeCleared({ isBottomPipe, pipe });
+        pipe.update({ isBottomPipe, newPosition });
       });
     });
     this._player.update();

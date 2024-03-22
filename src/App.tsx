@@ -8,7 +8,7 @@ function App() {
       <Canvas />
       <div id="score">0</div>
       <div id="game-over-modal">
-        <div className="game-over-modal-content">
+        <div className="flex justify-center items-center flex-col w-full h-full">
           <div>Game Over</div>
           <button onClick={() => window.location.reload()}>Restart</button>
         </div>

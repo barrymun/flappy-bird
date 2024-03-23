@@ -7,7 +7,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc && vite build",
     "test": "echo \"Warning: no test specified\"",
-    "cspell": "cspell --config cspell.json \"**/*.{ts,tsx,js,jsx,json}\"",
+    "cspell": "cspell --config cspell.json \"**/*.{ts,tsx,js,jsx,json}\" --quiet",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "prepare": "husky",

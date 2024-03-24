@@ -12,9 +12,9 @@
     "preview": "vite preview",
     "prepare": "husky",
     "docker-dev-up": "docker-compose -f docker-compose-dev.yaml up -d --build",
-    "docker-up": "docker-compose up -d --build",
+    "docker-up": "docker-compose -f docker-compose.yaml up -d --build",
     "docker-dev-down": "docker-compose -f docker-compose-dev.yaml down",
-    "docker-down": "docker-compose down"
+    "docker-down": "docker-compose -f docker-compose.yaml down"
   },
   "dependencies": {
     "react": "^18.2.0",
